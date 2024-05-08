@@ -25,6 +25,10 @@ function App() {
     // setText(selectedText);
   };
 
+  const createLink = () => {
+    document.execCommand('createLink', false, 'www.google.com');
+  };
+
   const handleInput = (e) => {
     console.log(e.target.innerText);
     // setText(e.target.innerText);
@@ -56,6 +60,8 @@ function App() {
       </div>
       <button onClick={handleBoldClick}>Bold</button>
       <button onClick={handleItalicClick}>Italic</button>
+      <button onClick={createLink}>Create link</button>
+
       <button onClick={handleColorChange}>Change color</button>
     </div>
   );
