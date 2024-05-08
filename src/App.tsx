@@ -1,7 +1,12 @@
 import { useState } from 'react';
+import TextEditor from './components/TextEditor';
 
 function App() {
-  return <></>;
+  return (
+    <>
+      <TextEditor />
+    </>
+  );
 }
 
 export default App;
