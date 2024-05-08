@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styles from '../styles/TextEditor.module.scss';
 
 function App() {
   const [text, setText] = useState(
@@ -13,6 +14,11 @@ function App() {
     document.execCommand('italic');
   };
 
+  const handleColorChange = () => {
+    // document.execCommand('styleWithCSS', false, true);
+    document.execCommand('foreColor', false, 'green');
+  };
+
   const handleTextSelect = () => {
     const selectedText = window.getSelection().toString();
     console.log(selectedText);
@@ -21,26 +27,36 @@ function App() {
 
   const handleInput = (e) => {
     console.log(e.target.innerText);
-    setText(e.target.innerText);
+    // setText(e.target.innerText);
+  };
+
+  const handleKeyDown = (e) => {
+    // event.key === 'Enter'
+    // if (e.keyCode === 13) {
+    //   e.preventDefault();
+    // }
   };
 
   return (
     <div>
       <div
         contentEditable
-        style={{
-          border: '1px solid #ccc',
-          padding: '10px',
-          minHeight: '100px',
-        }}
+        className={styles.paragraph}
+        // style={{
+        //   border: '1px solid #ccc',
+        //   padding: '10px',
+        //   minHeight: '100px',
+        // }}
         onDoubleClick={handleTextSelect}
         // onSelect={handleTextSelect}
         onInput={handleInput}
+        // onKeyDown={handleKeyDown}
       >
-        {text}
+        <div>{text}</div>
       </div>
       <button onClick={handleBoldClick}>Bold</button>
       <button onClick={handleItalicClick}>Italic</button>
+      <button onClick={handleColorChange}>Change color</button>
     </div>
   );
 }
