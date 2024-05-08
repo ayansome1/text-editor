@@ -11,11 +11,17 @@ function App() {
 
   const elRefs = useRef([]);
 
-  // Focus on newly created paragraph
+  // Set cursor focus on newly created paragraph
   useEffect(() => {
+    focusOnPara();
+    // const size = elRefs.current.length;
+    // elRefs.current[size - 1].focus();
+  }, [paras]);
+
+  const focusOnPara = () => {
     const size = elRefs.current.length;
     elRefs.current[size - 1].focus();
-  }, [paras]);
+  };
 
   const handleBoldClick = () => {
     document.execCommand('bold');
@@ -53,6 +59,8 @@ function App() {
       console.log(size + ' ' + focusedParaIndex);
       if (focusedParaIndex == paras.length - 1) {
         setParas((arr) => [...arr, true]);
+      } else {
+        elRefs.current[focusedParaIndex + 1].focus();
       }
       // setParas((arr) => [...arr, true]);
     }
@@ -69,7 +77,8 @@ function App() {
               setFocusedParaIndex(index);
             }}
             contentEditable
-            ref={(el) => (elRefs.current = [...elRefs.current, el])}
+            ref={(el) => (elRefs.current[index] = el)}
+            // ref={(el) => (elRefs.current = [...elRefs.current, el])}
             // tabIndex={1}
             autoFocus
             className={styles.paragraph}
