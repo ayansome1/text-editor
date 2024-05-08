@@ -1,10 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from '../styles/TextEditor.module.scss';
 
 function App() {
   const [text, setText] = useState(
     'Select some text and toggle bold or italic formatting.'
   );
+
+  const [paras, setParas] = useState([true]);
+  const [focusedParaIndex, setFocusedParaIndex] = useState(null);
+
+  const elRefs = useRef([]);
+
+  // Focus on newly created paragraph
+  useEffect(() => {
+    const size = elRefs.current.length;
+    elRefs.current[size - 1].focus();
+  }, [paras]);
 
   const handleBoldClick = () => {
     document.execCommand('bold');
@@ -36,33 +47,53 @@ function App() {
 
   const handleKeyDown = (e) => {
     // event.key === 'Enter'
-    // if (e.keyCode === 13) {
-    //   e.preventDefault();
-    // }
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      const size = elRefs.current.length;
+      console.log(size + ' ' + focusedParaIndex);
+      if (focusedParaIndex == paras.length - 1) {
+        setParas((arr) => [...arr, true]);
+      }
+      // setParas((arr) => [...arr, true]);
+    }
   };
 
   return (
     <div>
-      <div
-        contentEditable
-        className={styles.paragraph}
-        // style={{
-        //   border: '1px solid #ccc',
-        //   padding: '10px',
-        //   minHeight: '100px',
-        // }}
-        onDoubleClick={handleTextSelect}
-        // onSelect={handleTextSelect}
-        onInput={handleInput}
-        // onKeyDown={handleKeyDown}
-      >
-        <div>{text}</div>
-      </div>
+      {paras.map((val, index) => {
+        return (
+          <div
+            // key={index}
+            onFocus={() => {
+              console.log(index);
+              setFocusedParaIndex(index);
+            }}
+            contentEditable
+            ref={(el) => (elRefs.current = [...elRefs.current, el])}
+            // tabIndex={1}
+            autoFocus
+            className={styles.paragraph}
+            // style={{
+            //   border: '1px solid #ccc',
+            //   padding: '10px',
+            //   minHeight: '100px',
+            // }}
+            onDoubleClick={handleTextSelect}
+            // onSelect={handleTextSelect}
+            onInput={handleInput}
+            onKeyDown={handleKeyDown}
+          >
+            {/* <div>{text}</div> */}
+          </div>
+        );
+      })}
+
       <button onClick={handleBoldClick}>Bold</button>
       <button onClick={handleItalicClick}>Italic</button>
       <button onClick={createLink}>Create link</button>
 
       <button onClick={handleColorChange}>Change color</button>
+      <button>{focusedParaIndex}</button>
     </div>
   );
 }
