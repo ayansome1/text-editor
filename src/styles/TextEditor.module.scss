@@ -1,7 +1,12 @@
+.paragraphWrapper {
+  border: 1px solid gray;
+  margin-top: 40px;
+}
+
 .paragraph {
-  border: 1px solid #ccc;
+  border-left: 20px solid #ccc;
   padding: 10px;
-  min-height: 100px;
+  // min-height: 100px;
   div {
     padding: 20px;
   }
