@@ -7,10 +7,13 @@ function App() {
   const [paras, setParas] = useState([{ id: uuidv4() }]);
   const [focusedParaIndex, setFocusedParaIndex] = useState(null);
   const [isEditing, setIsEditing] = useState(true);
-  const [links, setLinks] = useState([]);
+  // const [links, setLinks] = useState([]);
+  const [allLinks, setAllLinks] = useState([]);
+
   // const [color, setColor] = useState('#1569a8');
 
   const elRefs = useRef([]);
+  const linkRef = useRef();
 
   const handleColorChange = (e) => {
     // setColor(e.target.value)
@@ -27,6 +30,11 @@ function App() {
   useEffect(() => {
     focusOnPara();
   }, [paras]);
+
+  useEffect(() => {
+    console.log(allLinks)
+    linkRef.current.innerHTML = allLinks.join('<br />');
+  }, [allLinks]);
 
   const focusOnPara = () => {
     const size = elRefs.current.length;
@@ -65,34 +73,16 @@ function App() {
     }
   };
 
-  // const handleOnBlur = (index) => {
-  //   console.log(index);
-  //   console.log(elRefs.current[index]);
-  //   // const content = elRefs.current[index].innerHTML;
-  //   // const updatedContent = content.replace(
-  //   //   /\((.*?)\)\[(.*?)\]/g,
-  //   //   (match, text, link) => {
-  //   //     return `<a href="${link}">${text}</a>`;
-  //   //   }
-  //   // );
-  //   // elRefs.current[index].innerHTML = updatedContent;
-  //   // elRefs.current[index].innerHTML = markdownToLinkConverter(
-  //   //   elRefs.current[index].innerHTML
-  //   // );
-
-  //   // markdownToLinkConverter(elRefs.current[index]);
-  // };
-
   const handleEditOrDoneClick = () => {
     if (isEditing) {
-      const linkArr = [];
+      const allLinks = [];
       setIsEditing(false);
       for (const refItem of elRefs.current) {
         const obj = markdownToLinkConverter(refItem.innerHTML);
         refItem.innerHTML = obj.text;
-        linkArr.push(...obj.links);
+        allLinks.push(...obj.allLinkElements);
       }
-      setLinks(linkArr);
+      setAllLinks(allLinks);
     } else {
       setIsEditing(true);
     }
@@ -135,7 +125,6 @@ function App() {
               onFocus={() => {
                 setFocusedParaIndex(index);
               }}
-              // onBlur={() => handleOnBlur(index)}
               contentEditable={isEditing}
               ref={(el) => (elRefs.current[index] = el)}
               autoFocus
@@ -154,13 +143,8 @@ function App() {
       <button onClick={handleEditOrDoneClick}>
         {isEditing ? 'Done' : 'Edit'}
       </button>
-      <div>
-        {links.map((obj) => (
-          <a href={obj.url} target='_blank'>
-            {obj.txt}
-          </a>
-        ))}
-      </div>
+      <div></div>
+      <div ref={linkRef} className={styles.linkContainer}></div>
     </div>
   );
 }

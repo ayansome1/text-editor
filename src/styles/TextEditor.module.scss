@@ -15,3 +15,13 @@
   }
   // display: inline-block;
 }
+
+.linkContainer {
+  background-color: lightgray;
+  & > a:nth-of-type(odd) {
+    color: green;
+  }
+  & > a:nth-of-type(even) {
+    color: red;
+  }
+}
