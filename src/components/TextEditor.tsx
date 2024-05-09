@@ -7,6 +7,7 @@ function App() {
   const [paras, setParas] = useState([{ id: uuidv4() }]);
   const [focusedParaIndex, setFocusedParaIndex] = useState(null);
   const [isEditing, setIsEditing] = useState(true);
+  const [links, setLinks] = useState([]);
   // const [color, setColor] = useState('#1569a8');
 
   const elRefs = useRef([]);
@@ -84,10 +85,14 @@ function App() {
 
   const handleEditOrDoneClick = () => {
     if (isEditing) {
+      const linkArr = [];
       setIsEditing(false);
       for (const refItem of elRefs.current) {
-        refItem.innerHTML = markdownToLinkConverter(refItem.innerHTML);
+        const obj = markdownToLinkConverter(refItem.innerHTML);
+        refItem.innerHTML = obj.text;
+        linkArr.push(...obj.links);
       }
+      setLinks(linkArr);
     } else {
       setIsEditing(true);
     }
@@ -145,9 +150,17 @@ function App() {
           );
         })}
       </div>
+
       <button onClick={handleEditOrDoneClick}>
         {isEditing ? 'Done' : 'Edit'}
       </button>
+      <div>
+        {links.map((obj) => (
+          <a href={obj.url} target='_blank'>
+            {obj.txt}
+          </a>
+        ))}
+      </div>
     </div>
   );
 }
