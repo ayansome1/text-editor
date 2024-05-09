@@ -6,8 +6,20 @@ import styles from '../styles/TextEditor.module.scss';
 function App() {
   const [paras, setParas] = useState([{ id: uuidv4() }]);
   const [focusedParaIndex, setFocusedParaIndex] = useState(null);
+  // const [color, setColor] = useState('#1569a8');
 
   const elRefs = useRef([]);
+
+  const handleColorChange = (e) => {
+    // setColor(e.target.value)
+    document.execCommand('foreColor', false, e.target.value);
+
+    // this.setState({
+    //   oldColor: this.state.color,
+    //   color: e.target.value,
+    //   active: !this.state.active,
+    // });
+  };
 
   // Set cursor focus on newly created paragraph
   useEffect(() => {
@@ -27,9 +39,9 @@ function App() {
     document.execCommand('italic');
   };
 
-  const handleColorChange = () => {
-    document.execCommand('foreColor', false, 'green');
-  };
+  // const handleColorChange = () => {
+  //   document.execCommand('foreColor', false, 'green');
+  // };
 
   const handleTextSelect = () => {
     const selectedText = window.getSelection().toString();
@@ -79,7 +91,7 @@ function App() {
       <button onClick={handleItalicClick}>Italic</button>
       <button onClick={createLink}>Create link</button>
 
-      <button onClick={handleColorChange}>Change color</button>
+      <input type='color' onChange={handleColorChange} />
       <button>{focusedParaIndex}</button>
       <div className={styles.paragraphWrapper}>
         {paras.map((val, index) => {
