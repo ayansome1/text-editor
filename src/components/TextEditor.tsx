@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-
+import { markdownToLinkConverter } from '../utils/utils';
 import styles from '../styles/TextEditor.module.scss';
 
 function App() {
   const [paras, setParas] = useState([{ id: uuidv4() }]);
   const [focusedParaIndex, setFocusedParaIndex] = useState(null);
+  const [isEditing, setIsEditing] = useState(true);
   // const [color, setColor] = useState('#1569a8');
 
   const elRefs = useRef([]);
@@ -63,6 +64,35 @@ function App() {
     }
   };
 
+  // const handleOnBlur = (index) => {
+  //   console.log(index);
+  //   console.log(elRefs.current[index]);
+  //   // const content = elRefs.current[index].innerHTML;
+  //   // const updatedContent = content.replace(
+  //   //   /\((.*?)\)\[(.*?)\]/g,
+  //   //   (match, text, link) => {
+  //   //     return `<a href="${link}">${text}</a>`;
+  //   //   }
+  //   // );
+  //   // elRefs.current[index].innerHTML = updatedContent;
+  //   // elRefs.current[index].innerHTML = markdownToLinkConverter(
+  //   //   elRefs.current[index].innerHTML
+  //   // );
+
+  //   // markdownToLinkConverter(elRefs.current[index]);
+  // };
+
+  const handleEditOrDoneClick = () => {
+    if (isEditing) {
+      setIsEditing(false);
+      for (const refItem of elRefs.current) {
+        refItem.innerHTML = markdownToLinkConverter(refItem.innerHTML);
+      }
+    } else {
+      setIsEditing(true);
+    }
+  };
+
   const swapBoxes = (fromIndex, toIndex) => {
     const tempHtml = elRefs.current[fromIndex].innerHTML;
     elRefs.current[fromIndex].innerHTML = elRefs.current[toIndex].innerHTML;
@@ -92,7 +122,6 @@ function App() {
       <button onClick={createLink}>Create link</button>
 
       <input type='color' onChange={handleColorChange} />
-      <button>{focusedParaIndex}</button>
       <div className={styles.paragraphWrapper}>
         {paras.map((val, index) => {
           return (
@@ -101,15 +130,14 @@ function App() {
               onFocus={() => {
                 setFocusedParaIndex(index);
               }}
-              contentEditable
+              // onBlur={() => handleOnBlur(index)}
+              contentEditable={isEditing}
               ref={(el) => (elRefs.current[index] = el)}
               autoFocus
               className={styles.paragraph}
               onDoubleClick={handleTextSelect}
-              // onSelect={handleTextSelect}
-              // onInput={handleInput}
               onKeyDown={handleKeyDown}
-              draggable={true}
+              draggable={isEditing}
               onDragStart={handleDragStart(index)}
               onDragOver={handleDragOver()}
               onDrop={handleDrop(index)}
@@ -117,6 +145,9 @@ function App() {
           );
         })}
       </div>
+      <button onClick={handleEditOrDoneClick}>
+        {isEditing ? 'Done' : 'Edit'}
+      </button>
     </div>
   );
 }
