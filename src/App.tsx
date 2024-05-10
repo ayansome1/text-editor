@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import TextEditor from './components/TextEditor';
 
 function App() {
