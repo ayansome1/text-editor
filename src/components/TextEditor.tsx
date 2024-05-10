@@ -7,23 +7,13 @@ function App() {
   const [paras, setParas] = useState([{ id: uuidv4() }]);
   const [focusedParaIndex, setFocusedParaIndex] = useState(null);
   const [isEditing, setIsEditing] = useState(true);
-  // const [links, setLinks] = useState([]);
   const [allLinks, setAllLinks] = useState([]);
-
-  // const [color, setColor] = useState('#1569a8');
 
   const elRefs = useRef([]);
   const linkRef = useRef();
 
   const handleColorChange = (e) => {
-    // setColor(e.target.value)
     document.execCommand('foreColor', false, e.target.value);
-
-    // this.setState({
-    //   oldColor: this.state.color,
-    //   color: e.target.value,
-    //   active: !this.state.active,
-    // });
   };
 
   // Set cursor focus on newly created paragraph
@@ -32,7 +22,7 @@ function App() {
   }, [paras]);
 
   useEffect(() => {
-    console.log(allLinks)
+    console.log(allLinks);
     linkRef.current.innerHTML = allLinks.join('<br />');
   }, [allLinks]);
 
@@ -45,21 +35,13 @@ function App() {
     document.execCommand('bold');
   };
 
-  const handleItalicClick = () => {
-    document.execCommand('italic');
+  const handleUnderlineClick = () => {
+    document.execCommand('underline');
   };
-
-  // const handleColorChange = () => {
-  //   document.execCommand('foreColor', false, 'green');
-  // };
 
   const handleTextSelect = () => {
     const selectedText = window.getSelection().toString();
     console.log(selectedText);
-  };
-
-  const createLink = () => {
-    document.execCommand('createLink', false, 'www.google.com');
   };
 
   const handleKeyDown = (e) => {
@@ -112,12 +94,17 @@ function App() {
 
   return (
     <div>
-      <button onClick={handleBoldClick}>Bold</button>
-      <button onClick={handleItalicClick}>Italic</button>
-      <button onClick={createLink}>Create link</button>
+      <div className={styles.btnContainer}>
+        <button onClick={handleBoldClick}>Bold</button>
+        <button onClick={handleUnderlineClick}>Underline</button>
+        <input type='color' onChange={handleColorChange} />
+      </div>
 
-      <input type='color' onChange={handleColorChange} />
-      <div className={styles.paragraphWrapper}>
+      <div
+        className={`${styles.paragraphWrapper} ${
+          isEditing ? styles['paragraphWrapper--active'] : ''
+        }`}
+      >
         {paras.map((val, index) => {
           return (
             <div
@@ -139,12 +126,17 @@ function App() {
           );
         })}
       </div>
+      <div className={styles.btnContainer}>
+        <button onClick={handleEditOrDoneClick} className={styles.btnMain}>
+          {isEditing ? 'Done' : 'Edit'}
+        </button>
+      </div>
 
-      <button onClick={handleEditOrDoneClick}>
-        {isEditing ? 'Done' : 'Edit'}
-      </button>
       <div></div>
-      <div ref={linkRef} className={styles.linkContainer}></div>
+      <div
+        ref={linkRef}
+        className={`${allLinks.length ? styles.linkContainer : ''}`}
+      ></div>
     </div>
   );
 }
